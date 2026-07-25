@@ -304,14 +304,29 @@ const DETAILS = [
   'Winter and summer wheels are included in the price.',
   'Air conditioning, cruise control and parking sensors are on board.',
   'The interior is free of smoke and shows only light wear on the driver seat.',
-  'Timing belt and water pump were replaced during the last major service.',
   'New brake discs and pads were fitted at the most recent inspection.',
   'Navigation, heated seats and a rear view camera are fitted.',
   'The vehicle runs on original wheels with tyres in good condition.',
   'Two keys, the full manual set and all service invoices are handed over.',
-  'The battery health was checked recently and is in very good shape.',
   'Bodywork is straight with only minor stone chips on the front bumper.'
 ];
+
+// Servicing claims have to match the drivetrain. A timing belt on a Model 3 or
+// a drive battery report on a petrol Polo is the kind of detail this market
+// notices immediately.
+const COMBUSTION_DETAILS = [
+  'Timing belt and water pump were replaced during the last major service.',
+  'The engine oil and filter were changed just before the sale.',
+  'The exhaust system and clutch were checked and are in good order.'
+];
+
+const ELECTRIFIED_DETAILS = [
+  'The high voltage battery was checked recently and its health is very good.',
+  'A type 2 charging cable is included and the charging port shows no wear.',
+  'The most recent battery report is available for inspection on request.'
+];
+
+const ELECTRIFIED = new Set(['ELECTRIC', 'HYBRID', 'PLUG_IN_HYBRID']);
 
 const CLOSERS = [
   'Viewings are possible on weekdays and by appointment on Saturdays.',
@@ -484,7 +499,9 @@ function buildDescription(vehicle, city) {
       .replace('{model}', `${vehicle.entry.make} ${vehicle.entry.model}`)
       .replace('{color}', vehicle.color.toLowerCase())
       .replace('{city}', city);
+  const drivetrain = ELECTRIFIED.has(vehicle.fuel) ? ELECTRIFIED_DETAILS : COMBUSTION_DETAILS;
   const parts = [replace(pick(OPENERS)), replace(pick(DETAILS))];
+  if (chance(0.55)) parts.push(replace(pick(drivetrain)));
   if (chance(0.7)) parts.push(replace(pick(CLOSERS)));
   return parts.join(' ');
 }
@@ -574,7 +591,7 @@ function main() {
     ['Nina Albers', 'nina.albers@mail.de', 'Is the vehicle still available and could I see it this Saturday morning?'],
     ['Ralf Timm', 'r.timm@web.de', 'Would you consider an offer slightly below the asking price for a quick sale?'],
     ['Yasemin Kaya', 'yasemin.kaya@mail.de', 'Could you send me the service book photos before I drive over from Kiel?'],
-    ['Peter Ohlsen', 'p.ohlsen@gmx.de', 'Has the timing belt already been changed and is there any rust on the sills?'],
+    ['Peter Ohlsen', 'p.ohlsen@gmx.de', 'Has the last service already been done and is there any rust on the sills?'],
     ['Marek Nowak', 'm.nowak@mail.de', 'I am interested in a test drive next week, are weekday evenings possible?'],
     ['Ingrid Sander', 'ingrid.sander@web.de', 'Does the car come with a second set of wheels and how old are the tyres?'],
     ['Tobias Frenzel', 't.frenzel@mail.de', 'Is trade in of a 2014 Golf possible and what would you allow for it?']
