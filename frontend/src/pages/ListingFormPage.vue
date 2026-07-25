@@ -36,17 +36,19 @@ const errors = reactive<Record<string, string>>({})
 const form = reactive({
   title: '',
   description: '',
-  priceEur: '' as string,
+  // v-model on <input type="number"> writes a number, not a string, so these
+  // hold either depending on whether the field has been touched.
+  priceEur: '' as string | number,
   makeName: '',
   modelName: '',
   bodyType: 'HATCHBACK' as BodyType,
   fuelType: 'PETROL' as FuelType,
   transmission: 'MANUAL' as Transmission,
   color: '',
-  mileageKm: '' as string,
-  powerKw: '' as string,
-  doors: '' as string,
-  seats: '' as string,
+  mileageKm: '' as string | number,
+  powerKw: '' as string | number,
+  doors: '' as string | number,
+  seats: '' as string | number,
   firstRegistration: '',
   nextInspection: '',
 })
@@ -120,7 +122,8 @@ async function loadListing() {
   }
 }
 
-function positive(value: string): number | null {
+function positive(value: string | number): number | null {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : null
   if (!value.trim()) return null
   const parsed = Number(value)
   return Number.isFinite(parsed) ? parsed : null
@@ -348,7 +351,8 @@ onMounted(async () => {
               :class="{ 'has-error': errors['vehicle.mileageKm'] }"
               type="number"
               min="0"
-              step="500"
+              step="1"
+              inputmode="numeric"
             />
             <p v-if="errors['vehicle.mileageKm']" class="field-error">
               {{ errors['vehicle.mileageKm'] }}
@@ -435,7 +439,8 @@ onMounted(async () => {
             :class="{ 'has-error': errors.priceEur }"
             type="number"
             min="1"
-            step="10"
+            step="1"
+            inputmode="numeric"
           />
           <p v-if="errors.priceEur" class="field-error">{{ errors.priceEur }}</p>
         </div>
