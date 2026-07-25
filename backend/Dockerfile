@@ -1,8 +1,10 @@
+# Build context is the repository root, not backend/, so that hosts which build
+# straight from the repo (Railway) and Compose can share this one file.
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /build
-COPY pom.xml ./
+COPY backend/pom.xml ./
 RUN mvn -B -DskipTests dependency:go-offline
-COPY src ./src
+COPY backend/src ./src
 RUN mvn -B -DskipTests package
 
 FROM eclipse-temurin:21-jre

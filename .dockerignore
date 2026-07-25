@@ -1,0 +1,17 @@
+# The API image builds from the repository root so that Compose and managed
+# hosts can share backend/Dockerfile. Keep everything the build does not need
+# out of the context.
+.git/
+.gitignore
+.tmp/
+docs/
+*.log
+
+frontend/node_modules/
+frontend/dist/
+
+backend/target/
+backend/uploads/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd

@@ -26,7 +26,8 @@ spring:
       max-request-size: 6MB
 
 server:
-  port: 8080
+  # Managed hosts assign the port at runtime through PORT.
+  port: ${PORT:8080}
   error:
     include-message: never
     include-stacktrace: never
