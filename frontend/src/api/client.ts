@@ -49,7 +49,18 @@ interface RequestOptions {
   signal?: AbortSignal
 }
 
-const BASE = '/api'
+// When the app is served under a sub-path, the API is proxied alongside it and
+// every request needs that prefix. Empty in local dev, where Vite proxies /api
+// straight to the backend.
+const PREFIX = import.meta.env.VITE_API_PREFIX ?? ''
+
+const BASE = `${PREFIX}/api`
+
+// The API returns image locations as absolute paths such as /api/images/... so
+// they need the same prefix before they can be used as an img src.
+export function mediaUrl(path: string): string {
+  return path.startsWith('/') ? `${PREFIX}${path}` : path
+}
 
 async function toApiError(response: Response): Promise<ApiError> {
   let message = defaultMessage(response.status)

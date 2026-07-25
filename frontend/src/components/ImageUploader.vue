@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import AppIcon from './AppIcon.vue'
+import { mediaUrl } from '../api/client'
 import type { ListingImageDto } from '../types'
 
 const props = withDefaults(
@@ -112,7 +113,7 @@ function onPick(event: Event) {
 
     <ul v-if="total" class="tiles">
       <li v-for="(image, index) in images" :key="`saved-${image.id}`" class="tile">
-        <img :src="image.url" :alt="`Photo ${index + 1}`" />
+        <img :src="mediaUrl(image.url)" :alt="`Photo ${index + 1}`" />
         <span v-if="index === 0" class="cover">Cover</span>
         <button
           type="button"

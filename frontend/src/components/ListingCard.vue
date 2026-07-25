@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import AppIcon from './AppIcon.vue'
 import SaveHeart from './SaveHeart.vue'
 import { bodyLabel, formatPrice, isNew, specGroups } from '../format'
+import { mediaUrl } from '../api/client'
 import type { ListingCardDto } from '../types'
 
 const props = withDefaults(
@@ -30,7 +31,7 @@ const fresh = computed(() => isNew(props.listing.createdAt))
     >
       <img
         v-if="listing.coverImageUrl"
-        :src="listing.coverImageUrl"
+        :src="mediaUrl(listing.coverImageUrl)"
         :alt="listing.title"
         loading="lazy"
         decoding="async"

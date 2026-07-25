@@ -5,6 +5,7 @@ import ConfirmDialog from '../components/ConfirmDialog.vue'
 import EmptyState from '../components/EmptyState.vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import { api } from '../api'
+import { mediaUrl } from '../api/client'
 import { errorMessage } from '../api/client'
 import { formatDateTime, formatPrice, specLine } from '../format'
 import type { SellerListingDto } from '../types'
@@ -100,7 +101,7 @@ onMounted(() => void load())
         >
           <img
             v-if="listing.coverImageUrl"
-            :src="listing.coverImageUrl"
+            :src="mediaUrl(listing.coverImageUrl)"
             :alt="listing.title"
             loading="lazy"
           />

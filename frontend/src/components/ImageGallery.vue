@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import AppIcon from './AppIcon.vue'
+import { mediaUrl } from '../api/client'
 import type { ListingImageDto } from '../types'
 
 const props = defineProps<{
@@ -48,7 +49,7 @@ function onKeydown(event: KeyboardEvent) {
     @keydown="onKeydown"
   >
     <div class="stage">
-      <img v-if="current" :src="current.url" :alt="alt" decoding="async" />
+      <img v-if="current" :src="mediaUrl(current.url)" :alt="alt" decoding="async" />
       <span v-else class="fallback"><AppIcon name="image" :size="34" /></span>
 
       <template v-if="total > 1">
@@ -77,7 +78,7 @@ function onKeydown(event: KeyboardEvent) {
           :aria-current="i === index"
           @click="index = i"
         >
-          <img :src="image.url" :alt="`${alt}, photo ${i + 1}`" loading="lazy" decoding="async" />
+          <img :src="mediaUrl(image.url)" :alt="`${alt}, photo ${i + 1}`" loading="lazy" decoding="async" />
         </button>
       </li>
     </ul>
