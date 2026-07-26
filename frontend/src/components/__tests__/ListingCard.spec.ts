@@ -28,7 +28,7 @@ function render(overrides: Partial<ListingCardDto> = {}, props: Record<string, u
 }
 
 function normalize(value: string): string {
-  return value.replace(/[\u00a0\u202f]/g, ' ').replace(/\s+/g, ' ').trim()
+  return value.replace(/[  ]/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
 describe('ListingCard', () => {
@@ -37,30 +37,43 @@ describe('ListingCard', () => {
     expect(normalize(wrapper.get('.price').text())).toBe('24.990 €')
   })
 
-  it('renders mileage, power and registration in the German spec rows', () => {
-    const rows = render().findAll('.specs')
-    expect(rows).toHaveLength(2)
-    const [age, drivetrain] = rows.map((row) => normalize(row.text()))
-    expect(age).toBe('EZ 03/2019 · 68.500 km')
-    expect(drivetrain).toBe('110 kW (150 PS) · Diesel · Automatic')
-  })
-
-  it('joins each value to its unit with a non-breaking space', () => {
-    const drivetrain = render().findAll('.specs')[1].text()
-    expect(drivetrain).toContain('110 kW')
-    expect(drivetrain).toContain('150 PS')
-  })
-
-  it('shows the city and title', () => {
+  it('sets the family as a label above the variant so neither repeats the other', () => {
     const wrapper = render()
-    expect(wrapper.get('.city').text()).toBe('Hamburg')
-    expect(wrapper.get('.title').text()).toBe('BMW 3 Series 320d Sport Line')
+    expect(wrapper.get('.family').text()).toBe('BMW 3 Series')
+    expect(wrapper.get('.title').text()).toBe('320d Sport Line')
   })
 
-  it('marks listings younger than seven days as new', () => {
-    expect(render().find('.new-badge').exists()).toBe(false)
-    const fresh = render({ createdAt: new Date().toISOString() })
-    expect(fresh.get('.new-badge').text()).toBe('New')
+  it('keeps a title whole when it does not open with the make and model', () => {
+    const wrapper = render({ title: 'Sport Line 320d' })
+    expect(wrapper.get('.title').text()).toBe('Sport Line 320d')
+  })
+
+  it('renders registration, mileage and power as three labelled columns', () => {
+    const columns = render()
+      .findAll('.spec')
+      .map((column) => [
+        normalize(column.get('dt').text()),
+        normalize(column.get('dd').text()),
+      ])
+    expect(columns).toEqual([
+      ['EZ', '03/2019'],
+      ['km', '68.500'],
+      ['kW (PS)', '110 (150)'],
+    ])
+  })
+
+  it('carries the unit in the column label so the values stay bare figures', () => {
+    const values = render()
+      .findAll('.spec-value')
+      .map((value) => value.text())
+    expect(values.some((value) => /km|kW|PS/.test(value))).toBe(false)
+  })
+
+  it('shows the drivetrain, body type and city', () => {
+    const wrapper = render()
+    expect(normalize(wrapper.get('.drivetrain').text())).toBe('Diesel · Automatic')
+    expect(wrapper.get('.body-tag').text()).toBe('Sedan')
+    expect(wrapper.get('.city').text()).toBe('Hamburg')
   })
 
   it('emits the listing when the save heart is toggled', async () => {

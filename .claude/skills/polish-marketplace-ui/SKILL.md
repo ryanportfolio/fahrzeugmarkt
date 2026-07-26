@@ -48,13 +48,17 @@ Never fork a second copy of any of these. A new format helper goes in `format.ts
 
 ## The house style, stated plainly
 
-Restraint is the aesthetic. mobile.de and AutoScout24 are the reference points: dense, gray-structured, grid-faithful, system fonts. Generic "make it striking" advice is wrong here and costs credibility. Specifically:
+Precision is the aesthetic, and precision is not the same as having no opinion. The governing idea is a technical listing sheet: hairlines, aligned figures, one inked band, one accent. Read the contract header at the top of `tokens.css` before changing anything visual. Specifically:
 
-- **The system font stack is the correct choice**, not a fallback. Do not add a webfont.
-- **No signature element, no hero treatment, no page-load reveal choreography.** This product has no landing page. Every surface is a data surface.
-- **Gray builds structure. The accent marks one primary action per view. Semantic colors only ever mean status.** A listing card is monochrome apart from its badge and the save control.
-- Density over drama on data surfaces. Whitespace belongs around headings and section breaks, not inside every row.
+- **Geist and Geist Mono are load-bearing, not decoration.** Every measured value takes the mono face with tabular figures, because that is what lets a column of results compare down the page. The display-size price is the one deliberate exception. Do not swap the stack back to system fonts, and do not add a third family.
+- **Hairlines, not shadows.** The shadow tokens resolve to `none` on purpose. The mobile filter sheet is the only surface allowed to float.
+- **One inked band.** Header and browse masthead share `--band`. Controls sitting on a photograph are inked to match it. Do not put a white bubble on an image.
+- **Gray builds structure. The accent marks one primary action per view. Semantic colors only ever mean status.** A listing card is monochrome apart from the save control.
+- **Density over drama on data surfaces**, but the page still needs a top note. The masthead earns its height by carrying the search, the shortcuts and the catalogue size. That is the only display-scale type in the product.
+- **A marker that is always on is not a marker.** Before adding a badge, check what share of real rows it fires on. The old "New" badge fired on two thirds of the catalogue and was removed for it.
 - Shared chrome, varied interiors. A listing card, a dashboard row, and a moderation row inherit radius, border, and padding from the tokens, but each gets internal structure driven by its own content. One template with different labels reads as a template.
+
+mobile.de and AutoScout24 remain the reference points for density and information order, not for surface treatment.
 
 ## Always-on rules
 

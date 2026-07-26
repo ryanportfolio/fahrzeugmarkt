@@ -15,9 +15,13 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      // Defaults to the local API. Set DEV_API_TARGET (and DEV_API_PREFIX when
+      // the target serves the API under a sub-path) to develop the front end
+      // against an already deployed backend instead of a local one.
       '/api': {
-        target: 'http://localhost:8080',
+        target: process.env.DEV_API_TARGET || 'http://localhost:8080',
         changeOrigin: true,
+        rewrite: (path) => `${process.env.DEV_API_PREFIX || ''}${path}`,
       },
     },
   },

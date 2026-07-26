@@ -1,29 +1,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import {
-  bodyLabel,
-  formatInspection,
-  formatMileage,
-  formatMonthYear,
-  formatPower,
-  fuelLabel,
-  transmissionLabel,
-} from '../format'
+import { formatInspection } from '../format'
 import type { VehicleDetailDto } from '../types'
 
 const props = defineProps<{ vehicle: VehicleDetailDto }>()
 
+// The price panel beside the gallery already carries registration, mileage,
+// power, fuel, transmission and body type. Repeating them here made two thirds
+// of this table an echo, so it now covers only what the panel does not.
 const rows = computed(() => {
   const v = props.vehicle
   return [
     { label: 'Make', value: v.make },
     { label: 'Model', value: v.model },
-    { label: 'Body type', value: bodyLabel(v.bodyType) },
-    { label: 'First registration', value: formatMonthYear(v.firstRegistration) },
-    { label: 'Mileage', value: formatMileage(v.mileageKm) },
-    { label: 'Power', value: formatPower(v.powerKw) },
-    { label: 'Fuel', value: fuelLabel(v.fuelType) },
-    { label: 'Transmission', value: transmissionLabel(v.transmission) },
     { label: 'Colour', value: v.color },
     { label: 'Doors', value: v.doors !== null ? String(v.doors) : 'Not specified' },
     { label: 'Seats', value: v.seats !== null ? String(v.seats) : 'Not specified' },
@@ -65,8 +54,11 @@ dt {
 
 dd {
   margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: var(--text-sm);
-  font-weight: 620;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   text-align: right;
 }
 

@@ -21,6 +21,7 @@ import {
   queriesEqual,
   removeChip,
   sortFromQuery,
+  PAGE_SIZE,
   SORT_KEYS,
 } from '../browse/filters'
 import type { FilterChip, FilterState } from '../browse/filters'
@@ -100,6 +101,15 @@ function applyShortcut(shortcut: Shortcut) {
 const chips = computed(() => activeChips(filters.value))
 const hasFilters = computed(() => chips.value.length > 0)
 const resultLabel = computed(() => formatCount(totalElements.value, 'vehicle', 'vehicles'))
+const makeCount = computed(() => meta.value?.makes.length ?? 0)
+
+// The masthead states the size of the catalogue the current filters describe,
+// so it stays true as filters narrow rather than advertising a fixed number.
+const shownRange = computed(() => {
+  if (!listings.value.length) return null
+  const first = page.value * PAGE_SIZE + 1
+  return { first, last: first + listings.value.length - 1, total: totalElements.value }
+})
 
 let controller: AbortController | null = null
 let syncTimer: ReturnType<typeof setTimeout> | undefined
@@ -229,35 +239,54 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="browse">
-    <section class="hero">
-      <div class="shell hero-inner">
-        <h1 class="hero-title">Used cars across northern Germany</h1>
-        <div class="search">
-          <AppIcon name="search" :size="18" />
-          <input
-            class="search-input"
-            type="search"
-            :value="filters.q"
-            placeholder="Search by make, model or title"
-            aria-label="Search vehicles"
-            @input="onSearchInput"
-          />
+    <section class="masthead">
+      <div class="shell masthead-inner">
+        <div class="masthead-lead">
+          <p class="masthead-eyebrow">Fahrzeugmarkt / Northern Germany</p>
+          <h1 class="masthead-title">Used cars across northern Germany</h1>
+
+          <div class="search">
+            <AppIcon name="search" :size="18" />
+            <input
+              class="search-input"
+              type="search"
+              :value="filters.q"
+              placeholder="Search by make, model or title"
+              aria-label="Search vehicles"
+              @input="onSearchInput"
+            />
+          </div>
+
+          <div class="shortcuts">
+            <span class="shortcuts-label">Popular</span>
+            <button
+              v-for="shortcut in shortcuts"
+              :key="shortcut.label"
+              type="button"
+              class="shortcut"
+              :class="{ on: shortcut.active(filters) }"
+              :aria-pressed="shortcut.active(filters)"
+              @click="applyShortcut(shortcut)"
+            >
+              {{ shortcut.label }}
+            </button>
+          </div>
         </div>
 
-        <div class="shortcuts">
-          <span class="shortcuts-label">Popular</span>
-          <button
-            v-for="shortcut in shortcuts"
-            :key="shortcut.label"
-            type="button"
-            class="shortcut"
-            :class="{ on: shortcut.active(filters) }"
-            :aria-pressed="shortcut.active(filters)"
-            @click="applyShortcut(shortcut)"
-          >
-            {{ shortcut.label }}
-          </button>
-        </div>
+        <dl class="masthead-stats">
+          <div class="stat">
+            <dt class="micro-label">Vehicles</dt>
+            <dd class="stat-value figure" :class="{ pending: loading }">
+              {{ loading ? '·' : totalElements }}
+            </dd>
+          </div>
+          <div class="stat">
+            <dt class="micro-label">Makes</dt>
+            <dd class="stat-value figure" :class="{ pending: !makeCount }">
+              {{ makeCount || '·' }}
+            </dd>
+          </div>
+        </dl>
       </div>
     </section>
 
@@ -280,7 +309,14 @@ onBeforeUnmount(() => {
       <section class="results">
         <div class="toolbar">
           <div class="count">
-            <p v-if="loading" class="count-value muted">Searching</p>
+            <p v-if="loading" class="count-value">Searching</p>
+            <p v-else-if="shownRange" class="count-value">
+              <span class="figure">{{ shownRange.first }}</span>
+              to
+              <span class="figure">{{ shownRange.last }}</span>
+              of
+              <span class="figure">{{ shownRange.total }}</span>
+            </p>
             <p v-else class="count-value">{{ resultLabel }}</p>
           </div>
 
@@ -376,26 +412,73 @@ onBeforeUnmount(() => {
   padding-bottom: var(--space-16);
 }
 
-.hero {
-  background:
-    radial-gradient(120% 140% at 12% 0%, var(--accent-soft) 0%, transparent 60%),
-    var(--surface-card);
-  border-bottom: 1px solid var(--border);
+/* The one inked surface on the page. It carries the search, the shortcuts and
+   the size of the catalogue, so the results below it can be pure structure. */
+.masthead {
+  background: var(--band);
+  color: var(--band-text);
+  /* Carries the boundary in dark mode, where the band and the page ground sit
+     only two steps apart. */
+  border-bottom: 1px solid var(--band-border);
 }
 
-.hero-inner {
+.masthead-inner {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding-top: var(--space-6);
-  padding-bottom: var(--space-5);
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-10);
+  padding-top: var(--space-10);
+  padding-bottom: var(--space-8);
 }
 
-.hero-title {
-  font-size: var(--text-lg);
-  font-weight: 620;
-  letter-spacing: -0.01em;
-  color: var(--text-muted);
+.masthead-lead {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 660px;
+}
+
+.masthead-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--band-muted);
+}
+
+.masthead-title {
+  font-size: var(--text-4xl);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--band-text);
+  text-wrap: balance;
+}
+
+.masthead-stats {
+  display: none;
+  gap: var(--space-10);
+  padding-top: 6px;
+}
+
+.stat-value {
+  margin-top: var(--space-2);
+  font-size: var(--text-3xl);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--band-text);
+}
+
+.stat-value.pending {
+  color: var(--band-muted);
+}
+
+.masthead-stats .micro-label {
+  color: var(--band-muted);
 }
 
 .search {
@@ -405,19 +488,18 @@ onBeforeUnmount(() => {
   max-width: 560px;
   padding: 0 var(--space-4);
   height: 52px;
-  background: var(--surface-card);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  color: var(--text-subtle);
-  box-shadow: var(--shadow-sm);
+  background: var(--band-field);
+  border: 1px solid var(--band-border);
+  border-radius: var(--radius-md);
+  color: var(--band-muted);
   transition:
     border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
+    background-color var(--transition-fast);
 }
 
 .search:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: var(--accent-on-band);
+  color: var(--band-text);
 }
 
 .search-input {
@@ -426,7 +508,12 @@ onBeforeUnmount(() => {
   border: none;
   background: transparent;
   font-size: var(--text-md);
+  color: var(--band-text);
   outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--band-muted);
 }
 
 .search-input::-webkit-search-cancel-button {
@@ -438,27 +525,27 @@ onBeforeUnmount(() => {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  margin-top: var(--space-1);
 }
 
 .shortcuts-label {
-  font-size: var(--text-xs);
-  font-weight: 640;
-  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
   text-transform: uppercase;
-  color: var(--text-subtle);
-  margin-right: var(--space-1);
+  color: var(--band-muted);
+  margin-right: var(--space-2);
 }
 
 .shortcut {
-  height: 32px;
+  height: 30px;
   padding: 0 var(--space-3);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  background: var(--surface-card);
-  color: var(--text-muted);
+  border: 1px solid var(--band-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--band-muted);
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -467,14 +554,14 @@ onBeforeUnmount(() => {
 }
 
 .shortcut:hover {
-  border-color: var(--accent);
-  color: var(--accent-text);
+  border-color: var(--band-muted);
+  color: var(--band-text);
 }
 
 .shortcut.on {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--accent-on-band);
+  border-color: var(--accent-on-band);
+  color: #06211f;
 }
 
 .layout {
@@ -509,21 +596,25 @@ onBeforeUnmount(() => {
 
 .toolbar {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
   flex-wrap: wrap;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border);
 }
 
 .count-value {
-  font-size: var(--text-xl);
-  font-weight: 660;
-  letter-spacing: -0.015em;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 450;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.count-note {
-  font-size: var(--text-xs);
-  color: var(--text-subtle);
+.count-value .figure {
+  color: var(--text);
 }
 
 .toolbar-actions {
@@ -553,7 +644,7 @@ onBeforeUnmount(() => {
 .grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .sheet-wrap {
@@ -626,6 +717,12 @@ onBeforeUnmount(() => {
   }
 }
 
+@media (min-width: 900px) {
+  .masthead-stats {
+    display: flex;
+  }
+}
+
 @media (min-width: 1024px) {
   .layout {
     grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
@@ -650,12 +747,6 @@ onBeforeUnmount(() => {
 
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1400px) {
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 </style>

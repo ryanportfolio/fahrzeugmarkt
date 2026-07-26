@@ -19,51 +19,32 @@ function prefersDark(): boolean {
     :title="dark ? 'Switch to light theme' : 'Switch to dark theme'"
     @click="theme.toggle()"
   >
-    <span class="knob" :class="{ dark }">
-      <AppIcon :name="dark ? 'moon' : 'sun'" :size="15" />
-    </span>
+    <AppIcon :name="dark ? 'moon' : 'sun'" :size="16" />
   </button>
 </template>
 
 <style scoped>
+/* Lives in the inked header, so it is a hairline icon control rather than a
+   sliding switch. A switch implies two settings held at once; this swaps one. */
 .theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  width: 56px;
-  height: 32px;
-  padding: 3px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--band-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--band-muted);
   cursor: pointer;
   transition:
-    background-color var(--transition-base),
-    border-color var(--transition-fast);
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .theme-toggle:hover {
-  border-color: var(--accent);
-}
-
-.knob {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--surface-card);
-  color: var(--text-muted);
-  box-shadow: var(--shadow-sm);
-  transform: translateX(0);
-  transition:
-    transform var(--transition-base),
-    color var(--transition-fast),
-    background-color var(--transition-fast);
-}
-
-.knob.dark {
-  transform: translateX(24px);
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--band-field);
+  border-color: var(--band-muted);
+  color: var(--band-text);
 }
 </style>

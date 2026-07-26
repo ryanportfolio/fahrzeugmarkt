@@ -216,9 +216,10 @@ function onModel(event: Event) {
 }
 
 .group-title {
-  font-size: var(--text-xs);
-  font-weight: 680;
-  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
   text-transform: uppercase;
   color: var(--text-subtle);
 }
@@ -258,10 +259,10 @@ function onModel(event: Event) {
 .check-box {
   position: relative;
   flex: none;
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid var(--border-strong);
-  border-radius: 5px;
+  width: 17px;
+  height: 17px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
   background: var(--surface-card);
   transition:
     background-color var(--transition-fast),
@@ -295,6 +296,7 @@ function onModel(event: Event) {
 }
 
 .count {
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
   font-variant-numeric: tabular-nums;
   color: var(--text-subtle);
@@ -310,14 +312,14 @@ function onModel(event: Event) {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  height: 32px;
+  height: 30px;
   padding: 0 var(--space-3);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   background: var(--surface-card);
   color: var(--text-muted);
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
@@ -326,8 +328,8 @@ function onModel(event: Event) {
 }
 
 .body-chip:hover {
-  border-color: var(--accent);
-  color: var(--accent-text);
+  border-color: var(--text);
+  color: var(--text);
 }
 
 .body-chip.on {
@@ -336,8 +338,15 @@ function onModel(event: Event) {
   color: var(--accent-contrast);
 }
 
+/* A count beside its own label, so it takes a dimmer token rather than
+   transparency, which would leave its real contrast unknowable. */
 .chip-count {
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  opacity: 0.7;
+  color: var(--text-subtle);
+}
+
+.body-chip.on .chip-count {
+  color: var(--accent-soft-strong);
 }
 </style>

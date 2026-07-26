@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import AppIcon from './AppIcon.vue'
 import SaveHeart from './SaveHeart.vue'
-import { bodyLabel, formatPrice, isNew, specGroups } from '../format'
+import { bodyLabel, formatPrice, fuelLabel, specColumns, transmissionLabel, variantLabel } from '../format'
 import { mediaUrl } from '../api/client'
 import type { ListingCardDto } from '../types'
 
@@ -18,8 +18,12 @@ const props = withDefaults(
 const emit = defineEmits<{ toggleSave: [listing: ListingCardDto] }>()
 
 const price = computed(() => formatPrice(props.listing.priceEur))
-const specs = computed(() => specGroups(props.listing))
-const fresh = computed(() => isNew(props.listing.createdAt))
+const columns = computed(() => specColumns(props.listing))
+const variant = computed(() => variantLabel(props.listing))
+const family = computed(() => `${props.listing.make} ${props.listing.model}`)
+const drivetrain = computed(() =>
+  [fuelLabel(props.listing.fuelType), transmissionLabel(props.listing.transmission)].join(' · '),
+)
 </script>
 
 <template>
@@ -37,7 +41,7 @@ const fresh = computed(() => isNew(props.listing.createdAt))
         decoding="async"
       />
       <span v-else class="media-fallback"><AppIcon name="car" :size="36" /></span>
-      <span v-if="fresh" class="new-badge">New</span>
+      <span class="body-tag">{{ bodyLabel(listing.bodyType) }}</span>
     </RouterLink>
 
     <SaveHeart
@@ -48,16 +52,24 @@ const fresh = computed(() => isNew(props.listing.createdAt))
     />
 
     <div class="body">
+      <p class="family micro-label">{{ family }}</p>
       <h3 class="title">
         <RouterLink :to="{ name: 'listing', params: { id: listing.id } }">
-          {{ listing.title }}
+          {{ variant }}
         </RouterLink>
       </h3>
-      <p class="price">{{ price }}</p>
-      <p class="specs">{{ specs[0] }}</p>
-      <p class="specs">{{ specs[1] }}</p>
+
+      <p class="price figure">{{ price }}</p>
+
+      <dl class="specs">
+        <div v-for="column in columns" :key="column.label" class="spec">
+          <dt class="micro-label">{{ column.label }}</dt>
+          <dd class="spec-value figure">{{ column.value }}</dd>
+        </div>
+      </dl>
+
       <div class="foot">
-        <span class="badge badge-neutral">{{ bodyLabel(listing.bodyType) }}</span>
+        <span class="drivetrain">{{ drivetrain }}</span>
         <span v-if="listing.city" class="city">{{ listing.city }}</span>
       </div>
     </div>
@@ -75,14 +87,11 @@ const fresh = computed(() => isNew(props.listing.createdAt))
   overflow: hidden;
   transition:
     border-color var(--transition-fast),
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
+    background-color var(--transition-fast);
 }
 
 .listing-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  border-color: var(--text);
 }
 
 .media {
@@ -90,6 +99,7 @@ const fresh = computed(() => isNew(props.listing.createdAt))
   display: block;
   aspect-ratio: 16 / 10;
   background: var(--surface-sunken);
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -101,7 +111,7 @@ const fresh = computed(() => isNew(props.listing.createdAt))
 }
 
 .listing-card:hover .media img {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .media-fallback {
@@ -112,18 +122,22 @@ const fresh = computed(() => isNew(props.listing.createdAt))
   color: var(--text-subtle);
 }
 
-.new-badge {
+/* The body type is the one fact the photograph itself carries, so it is
+   stamped on the image rather than repeated in the data columns. */
+.body-tag {
   position: absolute;
   left: var(--space-3);
-  top: var(--space-3);
-  padding: 3px var(--space-2);
-  border-radius: var(--radius-pill);
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  bottom: var(--space-3);
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(10, 11, 12, 0.66);
+  color: #f3f2ef;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
   text-transform: uppercase;
+  backdrop-filter: blur(6px);
 }
 
 .heart {
@@ -137,15 +151,19 @@ const fresh = computed(() => isNew(props.listing.createdAt))
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--space-1);
   padding: var(--space-4);
 }
 
+.family {
+  color: var(--text-subtle);
+}
+
 .title {
+  margin-top: 6px;
   font-size: var(--text-md);
-  font-weight: 620;
+  font-weight: 550;
   line-height: var(--leading-snug);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.015em;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -164,38 +182,72 @@ const fresh = computed(() => isNew(props.listing.createdAt))
   z-index: 1;
 }
 
-.title a:hover {
-  color: var(--accent-text);
-}
-
+/* The price is the one figure read at a glance rather than compared column by
+   column, so it takes the sans face with tabular figures. Mono at display size
+   spaces the digits too far apart to read as money. */
 .price {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
+  font-family: var(--font-sans);
   font-size: var(--text-xl);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
+  font-weight: 550;
+  letter-spacing: -0.035em;
   color: var(--text);
 }
 
+/* Three fixed columns, so mileage sits under mileage across a whole row of
+   results and the eye can compare down the grid instead of reading prose. */
 .specs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.spec {
+  padding: var(--space-3) var(--space-2) var(--space-3) 0;
+  min-width: 0;
+}
+
+.spec + .spec {
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border);
+}
+
+/* Sized so the widest real value, "140 (190)", clears three columns inside the
+   narrowest card in the grid without ellipsis. */
+.spec-value {
+  margin-top: 4px;
   font-size: var(--text-xs);
-  color: var(--text-muted);
-  line-height: var(--leading-snug);
-  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .foot {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-top: auto;
   padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: var(--text-xs);
+}
+
+.drivetrain {
+  color: var(--text-muted);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .city {
-  font-size: var(--text-xs);
   color: var(--text-subtle);
+  white-space: nowrap;
 }
 
 /* From the two-column grid up, reserve both title lines so the price sits on

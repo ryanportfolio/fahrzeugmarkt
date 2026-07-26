@@ -159,8 +159,36 @@ export function specGroups(listing: {
   ]
 }
 
-export function isNew(createdAt: string, now: number = Date.now()): boolean {
-  const created = new Date(createdAt).getTime()
-  if (Number.isNaN(created)) return false
-  return now - created < 7 * 24 * 60 * 60 * 1000
+// The card sets make and model as a label above the variant, so the variant
+// line must not repeat them. Titles that do not open with "make model" are
+// left whole rather than guessed at.
+export function variantLabel(listing: { title: string; make: string; model: string }): string {
+  const prefix = `${listing.make} ${listing.model}`.trim().toLocaleLowerCase('de-DE')
+  const title = listing.title.trim()
+  if (!prefix || !title.toLocaleLowerCase('de-DE').startsWith(prefix)) return title
+  const rest = title.slice(prefix.length).trim()
+  return rest || title
 }
+
+export interface SpecColumn {
+  label: string
+  value: string
+}
+
+// Three measured columns under the price. The unit lives in the label so the
+// values stay bare figures and align down a column of results.
+export function specColumns(listing: {
+  firstRegistration: string
+  mileageKm: number
+  powerKw: number
+}): SpecColumn[] {
+  return [
+    { label: 'EZ', value: formatMonthYear(listing.firstRegistration) },
+    { label: 'km', value: numberFormatter.format(listing.mileageKm) },
+    {
+      label: 'kW (PS)',
+      value: `${listing.powerKw} (${Math.round(listing.powerKw * PS_PER_KW)})`,
+    },
+  ]
+}
+
