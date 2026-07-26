@@ -120,28 +120,29 @@ function onKeydown(event: KeyboardEvent) {
   color: var(--text-subtle);
 }
 
+/* Inked to match the save control and the body-type stamp, so every control
+   that sits on a photograph speaks the same language. */
 .arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--surface-card) 88%, transparent);
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(243, 242, 239, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(10, 11, 12, 0.6);
   backdrop-filter: blur(6px);
-  color: var(--text);
+  color: rgba(243, 242, 239, 0.92);
   cursor: pointer;
-  box-shadow: var(--shadow-sm);
   transition:
     background-color var(--transition-fast),
     transform var(--transition-fast);
 }
 
 .arrow:hover {
-  background: var(--surface-card);
+  background: rgba(10, 11, 12, 0.78);
 }
 
 .arrow.left {
@@ -156,14 +157,16 @@ function onKeydown(event: KeyboardEvent) {
   position: absolute;
   right: var(--space-3);
   bottom: var(--space-3);
-  padding: 3px var(--space-2);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--surface-card) 88%, transparent);
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  background: rgba(10, 11, 12, 0.66);
   backdrop-filter: blur(6px);
-  font-size: var(--text-xs);
-  font-weight: 620;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
   font-variant-numeric: tabular-nums;
-  color: var(--text-muted);
+  color: rgba(243, 242, 239, 0.92);
 }
 
 /* Thumbnails stay a strip of small frames rather than stretching to fill the

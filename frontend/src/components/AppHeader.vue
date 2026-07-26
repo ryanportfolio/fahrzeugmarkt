@@ -136,13 +136,15 @@ async function signOut() {
 </template>
 
 <style scoped>
+/* Inked chrome. On browse it runs continuously into the masthead, so the page
+   opens on one solid block rather than a white bar above a white band. */
 .header {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: color-mix(in srgb, var(--surface-card) 88%, transparent);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  background: var(--band);
+  color: var(--band-text);
+  border-bottom: 1px solid var(--band-border);
 }
 
 .header-inner {
@@ -156,26 +158,46 @@ async function signOut() {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  color: var(--text);
-  font-weight: 680;
+  gap: var(--space-3);
+  color: var(--band-text);
+  font-weight: 550;
   font-size: var(--text-md);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   margin-right: var(--space-6);
 }
 
 .brand:hover {
-  color: var(--text);
+  color: var(--band-text);
 }
 
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--radius-sm);
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--accent-on-band);
+  color: #06211f;
+}
+
+/* The shared button styles resolve against the page ramp, so the two auth
+   controls are restated against the band ramp here. */
+.desktop-auth.btn-ghost {
+  color: var(--band-muted);
+}
+
+.desktop-auth.btn-ghost:not(:disabled):hover {
+  background: var(--band-field);
+  color: var(--band-text);
+}
+
+.desktop-auth.btn-primary {
+  background: var(--accent-on-band);
+  color: #06211f;
+}
+
+.desktop-auth.btn-primary:not(:disabled):hover {
+  background: #63cabf;
 }
 
 .nav-trigger {
@@ -183,10 +205,10 @@ async function signOut() {
   place-items: center;
   width: 36px;
   height: 36px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--band-border);
   border-radius: var(--radius-sm);
-  background: var(--surface-card);
-  color: var(--text-muted);
+  background: transparent;
+  color: var(--band-muted);
   cursor: pointer;
 }
 
@@ -209,22 +231,22 @@ async function signOut() {
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
-  color: var(--text-muted);
+  color: var(--band-muted);
   font-size: var(--text-sm);
-  font-weight: 560;
+  font-weight: 500;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast);
 }
 
 .nav-link:hover {
-  background: var(--surface-hover);
-  color: var(--text);
+  background: var(--band-field);
+  color: var(--band-text);
 }
 
 .nav-link.router-link-active {
-  color: var(--accent-text);
-  background: var(--accent-soft);
+  color: var(--band-text);
+  background: var(--band-field);
 }
 
 .pill {

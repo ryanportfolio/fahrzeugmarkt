@@ -1,7 +1,32 @@
+/* Fahrzeugmarkt visual contract
+ *
+ * Governing idea: a technical listing sheet. A used car is sold on measured
+ * facts, so the interface is built from hairlines, aligned figures and one
+ * confident accent, not from cards floating on shadows.
+ *
+ * Type: Geist for prose and interface, Geist Mono for every measured value.
+ * Mono is not decoration here, it is the alignment mechanism. Mileage, power
+ * and registration dates line up down a column of results because they are
+ * set in a fixed-advance face with tabular figures.
+ *
+ * Colour: a warm neutral ramp carries all structure. The petrol accent marks
+ * one primary action per view and the saved state, nothing else. Semantic
+ * green, amber and red only ever mean listing status.
+ *
+ * Depth: hairline borders, not shadows. Shadow is reserved for surfaces that
+ * genuinely float above the page, which is the mobile filter sheet and
+ * nothing else. Radius is tight on purpose.
+ *
+ * Tried and rejected: soft drop shadows on every card, which read as a 2015
+ * Material template; pill radii on inputs and cards, same reason; the system
+ * font stack, which cannot align a figure column and gave the data surfaces
+ * no voice at all.
+ */
+
 :root {
   --font-sans:
-    system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+    'Geist', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
   --space-1: 4px;
   --space-2: 8px;
@@ -15,90 +40,113 @@
   --space-16: 64px;
   --space-20: 80px;
 
-  --text-xs: 13px;
+  --text-xs: 12px;
   --text-sm: 14px;
   --text-md: 16px;
   --text-lg: 18px;
   --text-xl: 22px;
   --text-2xl: 28px;
   --text-3xl: 36px;
+  --text-4xl: clamp(34px, 3.2vw + 16px, 52px);
 
-  --leading-tight: 1.2;
-  --leading-snug: 1.35;
+  --leading-tight: 1.05;
+  --leading-snug: 1.3;
   --leading-normal: 1.6;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  /* Micro label: the uppercase mono caption above a measured value. */
+  --label-size: 10px;
+  --label-tracking: 0.12em;
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
   --radius-pill: 999px;
 
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
   --content-max: 1440px;
-  --sidebar-width: 288px;
+  --sidebar-width: 264px;
   --header-height: 64px;
 
   color-scheme: light;
 
-  --surface-page: #f5f7f7;
+  --surface-page: #f4f3f0;
   --surface-card: #ffffff;
-  --surface-sunken: #eceff0;
+  --surface-sunken: #e9e7e2;
   --surface-raised: #ffffff;
-  --surface-overlay: rgba(12, 20, 22, 0.45);
-  --surface-hover: #f0f3f3;
+  --surface-overlay: rgba(20, 20, 18, 0.5);
+  --surface-hover: #f8f7f5;
 
-  --border: #dde2e3;
-  --border-strong: #c2caca;
+  --border: #e3e0d9;
+  --border-strong: #c9c5bb;
 
-  --text: #0e1618;
-  --text-muted: #55636a;
-  --text-subtle: #7c8a90;
+  --text: #16171a;
+  --text-muted: #5c5b56;
+  /* Holds 4.5:1 against both the card and the page ground, because the micro
+     labels set in it are 10px. Measured, not eyeballed. */
+  --text-subtle: #6c6a64;
   --text-inverse: #ffffff;
 
-  --accent: #0c6b6b;
-  --accent-hover: #095656;
-  --accent-active: #074646;
-  --accent-soft: #e0efee;
-  --accent-soft-strong: #c6e2e0;
-  --accent-text: #0a5c5c;
+  /* The dark band behind the page head. Fixed in both themes so the head
+     always reads as the one inked surface on the page. */
+  --band: #16171a;
+  --band-text: #f3f2ef;
+  --band-muted: #a3a29c;
+  --band-border: #2c2e31;
+  --band-field: #202225;
+
+  --accent: #0b6360;
+  --accent-hover: #085250;
+  --accent-active: #064240;
+  --accent-soft: #e2eeec;
+  --accent-soft-strong: #c6ded9;
+  --accent-text: #085552;
   --accent-contrast: #ffffff;
+  /* The accent as it appears on the inked band, lifted for contrast. */
+  --accent-on-band: #4fbdb2;
 
   --success: #1c7f4a;
   --success-soft: #dcefe3;
-  --warning: #9a6207;
-  --warning-soft: #f7ecd6;
-  --danger: #b3352b;
-  --danger-soft: #fae2df;
+  --warning: #8a5b06;
+  --warning-soft: #f5ead3;
+  --danger: #ad3227;
+  --danger-soft: #f8e1de;
 
   --focus-ring: 0 0 0 2px var(--surface-card), 0 0 0 4px var(--accent);
 
-  --shadow-sm: 0 1px 2px rgba(14, 22, 24, 0.06), 0 1px 3px rgba(14, 22, 24, 0.05);
-  --shadow-md: 0 2px 4px rgba(14, 22, 24, 0.05), 0 8px 20px rgba(14, 22, 24, 0.08);
-  --shadow-lg: 0 12px 32px rgba(14, 22, 24, 0.14), 0 2px 8px rgba(14, 22, 24, 0.08);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 16px 48px rgba(20, 20, 18, 0.22);
 
-  --skeleton-base: #e6eaea;
-  --skeleton-shine: #f2f5f5;
+  --skeleton-base: #e7e5e0;
+  --skeleton-shine: #f3f2ef;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
 
-    --surface-page: #0c1012;
-    --surface-card: #141a1c;
-    --surface-sunken: #10171a;
-    --surface-raised: #1b2326;
-    --surface-overlay: rgba(4, 8, 9, 0.66);
-    --surface-hover: #1b2326;
+    --surface-page: #0e0f10;
+    --surface-card: #16181a;
+    --surface-sunken: #121415;
+    --surface-raised: #1c1f21;
+    --surface-overlay: rgba(4, 5, 5, 0.7);
+    --surface-hover: #1c1f21;
 
-    --border: #263033;
-    --border-strong: #384549;
+    --border: #262a2c;
+    --border-strong: #3a4043;
 
-    --text: #e9eeef;
-    --text-muted: #9daaaf;
-    --text-subtle: #7a888d;
-    --text-inverse: #081616;
+    --text: #ecedec;
+    --text-muted: #9ea19f;
+    --text-subtle: #8b8f8c;
+    --text-inverse: #0c1414;
+
+    --band: #08090a;
+    --band-text: #ecedec;
+    --band-muted: #91948f;
+    --band-border: #22262a;
+    --band-field: #141719;
 
     --accent: #3cb5ae;
     --accent-hover: #55c7c0;
@@ -107,6 +155,7 @@
     --accent-soft-strong: #17423f;
     --accent-text: #67cfc8;
     --accent-contrast: #04201f;
+    --accent-on-band: #4fbdb2;
 
     --success: #4cc283;
     --success-soft: #10301f;
@@ -117,75 +166,90 @@
 
     --focus-ring: 0 0 0 2px var(--surface-page), 0 0 0 4px var(--accent);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-sm: none;
+    --shadow-md: none;
+    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
 
-    --skeleton-base: #1c2427;
-    --skeleton-shine: #252f33;
+    --skeleton-base: #1b1e20;
+    --skeleton-shine: #242829;
   }
 }
 
 :root[data-theme='light'] {
   color-scheme: light;
 
-  --surface-page: #f5f7f7;
+  --surface-page: #f4f3f0;
   --surface-card: #ffffff;
-  --surface-sunken: #eceff0;
+  --surface-sunken: #e9e7e2;
   --surface-raised: #ffffff;
-  --surface-overlay: rgba(12, 20, 22, 0.45);
-  --surface-hover: #f0f3f3;
+  --surface-overlay: rgba(20, 20, 18, 0.5);
+  --surface-hover: #f8f7f5;
 
-  --border: #dde2e3;
-  --border-strong: #c2caca;
+  --border: #e3e0d9;
+  --border-strong: #c9c5bb;
 
-  --text: #0e1618;
-  --text-muted: #55636a;
-  --text-subtle: #7c8a90;
+  --text: #16171a;
+  --text-muted: #5c5b56;
+  /* Holds 4.5:1 against both the card and the page ground, because the micro
+     labels set in it are 10px. Measured, not eyeballed. */
+  --text-subtle: #6c6a64;
   --text-inverse: #ffffff;
 
-  --accent: #0c6b6b;
-  --accent-hover: #095656;
-  --accent-active: #074646;
-  --accent-soft: #e0efee;
-  --accent-soft-strong: #c6e2e0;
-  --accent-text: #0a5c5c;
+  --band: #16171a;
+  --band-text: #f3f2ef;
+  --band-muted: #a3a29c;
+  --band-border: #2c2e31;
+  --band-field: #202225;
+
+  --accent: #0b6360;
+  --accent-hover: #085250;
+  --accent-active: #064240;
+  --accent-soft: #e2eeec;
+  --accent-soft-strong: #c6ded9;
+  --accent-text: #085552;
   --accent-contrast: #ffffff;
+  --accent-on-band: #4fbdb2;
 
   --success: #1c7f4a;
   --success-soft: #dcefe3;
-  --warning: #9a6207;
-  --warning-soft: #f7ecd6;
-  --danger: #b3352b;
-  --danger-soft: #fae2df;
+  --warning: #8a5b06;
+  --warning-soft: #f5ead3;
+  --danger: #ad3227;
+  --danger-soft: #f8e1de;
 
   --focus-ring: 0 0 0 2px var(--surface-card), 0 0 0 4px var(--accent);
 
-  --shadow-sm: 0 1px 2px rgba(14, 22, 24, 0.06), 0 1px 3px rgba(14, 22, 24, 0.05);
-  --shadow-md: 0 2px 4px rgba(14, 22, 24, 0.05), 0 8px 20px rgba(14, 22, 24, 0.08);
-  --shadow-lg: 0 12px 32px rgba(14, 22, 24, 0.14), 0 2px 8px rgba(14, 22, 24, 0.08);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 16px 48px rgba(20, 20, 18, 0.22);
 
-  --skeleton-base: #e6eaea;
-  --skeleton-shine: #f2f5f5;
+  --skeleton-base: #e7e5e0;
+  --skeleton-shine: #f3f2ef;
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --surface-page: #0c1012;
-  --surface-card: #141a1c;
-  --surface-sunken: #10171a;
-  --surface-raised: #1b2326;
-  --surface-overlay: rgba(4, 8, 9, 0.66);
-  --surface-hover: #1b2326;
+  --surface-page: #0e0f10;
+  --surface-card: #16181a;
+  --surface-sunken: #121415;
+  --surface-raised: #1c1f21;
+  --surface-overlay: rgba(4, 5, 5, 0.7);
+  --surface-hover: #1c1f21;
 
-  --border: #263033;
-  --border-strong: #384549;
+  --border: #262a2c;
+  --border-strong: #3a4043;
 
-  --text: #e9eeef;
-  --text-muted: #9daaaf;
-  --text-subtle: #7a888d;
-  --text-inverse: #081616;
+  --text: #ecedec;
+  --text-muted: #9ea19f;
+  --text-subtle: #7b7e7c;
+  --text-inverse: #0c1414;
+
+  --band: #08090a;
+  --band-text: #ecedec;
+  --band-muted: #91948f;
+  --band-border: #22262a;
+  --band-field: #141719;
 
   --accent: #3cb5ae;
   --accent-hover: #55c7c0;
@@ -194,6 +258,7 @@
   --accent-soft-strong: #17423f;
   --accent-text: #67cfc8;
   --accent-contrast: #04201f;
+  --accent-on-band: #4fbdb2;
 
   --success: #4cc283;
   --success-soft: #10301f;
@@ -204,10 +269,10 @@
 
   --focus-ring: 0 0 0 2px var(--surface-page), 0 0 0 4px var(--accent);
 
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
 
-  --skeleton-base: #1c2427;
-  --skeleton-shine: #252f33;
+  --skeleton-base: #1b1e20;
+  --skeleton-shine: #242829;
 }

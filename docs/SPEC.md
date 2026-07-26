@@ -136,7 +136,18 @@ Formatting helpers (single `src/format.ts`): price `Intl.NumberFormat('de-DE', {
 
 ### Visual system
 
-Recruiter-facing. Tokens in `src/styles/tokens.css`: 4px spacing scale; type scale 13/14/16/18/22/28/36; radius 6/10/16; system font stack. Light + dark via `prefers-color-scheme` AND a manual toggle (persisted, `data-theme` attr wins). Palette: neutral surface ramp + one confident accent (deep petrol/teal family) + semantic green/amber/red for status badges. Both themes must pass contrast. Consistent focus rings. Subtle transitions (150–200ms) on hover/theme. Mobile-first responsive. No emoji as icons — small inline SVG icon set. Copy rules: no em dashes anywhere, headings without trailing periods.
+Recruiter-facing. Tokens in `src/styles/tokens.css`, whose header states the binding contract and what was tried and rejected. 4px spacing scale; type scale 12/14/16/18/22/28/36 plus a fluid display step; radius 3/5/8. Light + dark via `prefers-color-scheme` AND a manual toggle (persisted, `data-theme` attr wins). Palette: warm neutral surface ramp + one confident accent (deep petrol/teal family) + semantic green/amber/red for status badges. Both themes must pass contrast. Consistent focus rings. Subtle transitions (150 to 200ms) on hover/theme. Mobile-first responsive. No emoji as icons, small inline SVG icon set. Copy rules: no em dashes anywhere, headings without trailing periods.
+
+Governing idea: a technical listing sheet. Structure is built from hairlines and aligned figures, not from cards floating on shadows.
+
+- **Type.** Geist for interface and prose, Geist Mono for every measured value: prices in the data columns, mileage, power, registration and inspection dates, facet counts, page numbers. Mono is the alignment mechanism, so a column of results compares down the page. The one exception is the card and panel price at display size, which takes the sans face because mono spaces large digits too far apart to read as money. Loaded from Google Fonts with `display=swap`; the system stack remains the fallback.
+- **Depth.** Hairline borders carry separation. `--shadow-sm` and `--shadow-md` resolve to `none`; shadow is reserved for the mobile filter sheet, which genuinely floats.
+- **The inked band.** Header and browse masthead share `--band`, giving the page one solid opening block that carries the search, the shortcuts and the catalogue size. Controls that sit on a photograph (save, gallery arrows, counter, body-type stamp) are inked to match.
+- **Micro labels.** The uppercase mono caption above a measured value uses `--label-size` and `--label-tracking`. Section headings in the sidebar and panels use the same treatment.
+
+Browse composition: masthead, then a hairline toolbar carrying the shown range and sort, then a grid of at most three cards per row so each card has room for its data columns. Card: image bleeding to the card edge with the body type stamped on it, make and model as a label above the variant, price, then registration, mileage and power as three labelled mono columns, then drivetrain and city on a rule. The unit lives in the column label so values stay bare figures.
+
+Amended 2026-07-25, replacing the previous system font stack, 6/10/16 radii, per-card drop shadows, four-column grid, and the "New" badge, which fired on two thirds of a freshly seeded catalogue and so marked nothing. `isNew` was removed with it.
 
 ## Tests
 

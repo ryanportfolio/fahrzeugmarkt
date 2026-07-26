@@ -271,8 +271,11 @@ onMounted(() => void load())
 }
 
 .highlight-value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
   font-size: var(--text-sm);
-  font-weight: 620;
+  font-weight: 500;
+  letter-spacing: -0.01em;
   text-align: right;
 }
 

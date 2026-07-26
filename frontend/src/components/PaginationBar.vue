@@ -73,12 +73,16 @@ function go(page: number) {
 </template>
 
 <style scoped>
+/* Sits on a rule, so the page numbers read as part of the results table
+   rather than as a floating widget under it. */
 .pagination {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--space-2);
   flex-wrap: wrap;
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
 }
 
 .numbers {
@@ -95,8 +99,10 @@ function go(page: number) {
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--text-muted);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs);
+  font-weight: 500;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),

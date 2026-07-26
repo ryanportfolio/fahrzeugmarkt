@@ -61,13 +61,21 @@ const emit = defineEmits<{ toggle: [] }>()
   border-color: var(--danger);
 }
 
+/* Sits on the photograph, so it is inked like the body-type stamp rather than
+   floated as a white bubble. */
 .floating {
-  width: 36px;
-  height: 36px;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--surface-card) 90%, transparent);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border-color: rgba(243, 242, 239, 0.28);
+  background: rgba(10, 11, 12, 0.6);
+  color: rgba(243, 242, 239, 0.92);
   backdrop-filter: blur(6px);
-  box-shadow: var(--shadow-sm);
+}
+
+.floating:hover,
+.floating.active {
+  background: rgba(10, 11, 12, 0.78);
 }
 
 .inline {
