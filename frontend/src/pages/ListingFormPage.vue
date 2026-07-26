@@ -513,7 +513,7 @@ onMounted(async () => {
   gap: var(--space-2);
   align-self: flex-start;
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-muted);
 }
 
@@ -567,12 +567,12 @@ onMounted(async () => {
   background: var(--accent-soft);
   color: var(--accent-text);
   font-size: var(--text-sm);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .step-title {
   font-size: var(--text-lg);
-  font-weight: 640;
+  font-weight: 500;
 }
 
 .step-note {

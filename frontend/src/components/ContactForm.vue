@@ -63,7 +63,7 @@ async function submit() {
 </script>
 
 <template>
-  <section class="contact panel">
+  <section class="contact">
     <h2 class="heading">Contact the seller</h2>
 
     <div v-if="!auth.isAuthenticated" class="gate">
@@ -143,12 +143,17 @@ async function submit() {
   gap: var(--space-4);
 }
 
+/* Opened by a rule like every other block on the page, not enclosed in a panel.
+   It was the only bordered box left on the detail page. */
 .heading {
-  font-size: var(--text-xs);
-  font-weight: 680;
-  letter-spacing: 0.08em;
+  padding-bottom: var(--space-2);
+  border-bottom: var(--rule-mid) solid var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
   text-transform: uppercase;
-  color: var(--text-subtle);
+  color: var(--text);
 }
 
 .gate {
@@ -191,7 +196,7 @@ async function submit() {
 
 .done-title {
   font-size: var(--text-sm);
-  font-weight: 660;
+  font-weight: 500;
   color: var(--success);
 }
 

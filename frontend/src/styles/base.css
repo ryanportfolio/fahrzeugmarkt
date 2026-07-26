@@ -53,28 +53,28 @@ h1 {
   font-size: var(--text-3xl);
   line-height: var(--leading-tight);
   letter-spacing: -0.03em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 h2 {
   font-size: var(--text-2xl);
   line-height: var(--leading-tight);
   letter-spacing: -0.022em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 h3 {
   font-size: var(--text-xl);
   line-height: var(--leading-snug);
   letter-spacing: -0.018em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 h4 {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
   letter-spacing: -0.012em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 img,
@@ -101,9 +101,20 @@ textarea {
   color: inherit;
 }
 
+/* One focus signal for the whole product.
+ *
+ * The ruled controls have no box for a ring to sit around, so the temptation was to
+ * write `box-shadow: none` in each of them and rely on the underline turning amber.
+ * That silently deleted the only focus indicator on about thirty controls, because a
+ * hairline changing colour is not a focus state a keyboard user can find, and in
+ * several cases the underline was transparent at rest so it never landed at all.
+ *
+ * So the ring stays, everywhere, and components that need their own emphasis compose
+ * on top of it rather than replacing it. `outline` is used rather than `box-shadow`
+ * because a component setting its own box-shadow can no longer wipe it out. */
 :focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  outline: var(--rule-mid) solid var(--accent);
+  outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
 
@@ -191,26 +202,28 @@ textarea {
 
 /* Buttons */
 
+/* The primary action stays a solid block, because one filled shape per view is the
+   accent doing its job. Everything softer than that loses its fill: a page of
+   equally-weighted grey buttons is what made the old surfaces read as a template. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
   padding: 0 var(--space-4);
-  height: 40px;
-  border: 1px solid transparent;
+  height: 38px;
+  border: var(--rule-hair) solid transparent;
   border-radius: var(--radius-sm);
   background: transparent;
   font-size: var(--text-sm);
-  font-weight: 600;
-  letter-spacing: 0.005em;
+  font-weight: 500;
+  letter-spacing: -0.005em;
   cursor: pointer;
   white-space: nowrap;
   transition:
     background-color var(--transition-fast),
     border-color var(--transition-fast),
     color var(--transition-fast),
-    box-shadow var(--transition-fast),
     transform var(--transition-fast);
 }
 
@@ -233,15 +246,14 @@ textarea {
 }
 
 .btn-secondary {
-  background: var(--surface-card);
+  background: none;
   border-color: var(--border-strong);
   color: var(--text);
 }
 
 .btn-secondary:not(:disabled):hover {
-  background: var(--surface-hover);
-  border-color: var(--accent);
-  color: var(--accent-text);
+  border-color: var(--text);
+  color: var(--text);
 }
 
 .btn-ghost {
@@ -288,49 +300,75 @@ textarea {
   gap: var(--space-2);
 }
 
+/* The label above a field takes the same mono micro-label voice as the label above
+   a measured value, so a form and a spec sheet read as one document. */
 .field-label {
-  font-size: var(--text-xs);
-  font-weight: 620;
-  letter-spacing: 0.02em;
-  color: var(--text-muted);
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: var(--text-subtle);
 }
 
+/* Ruled, not boxed. A page of bordered rounded fields is the shape of every admin
+   template, and it was the language this design set out to leave. The rule sits
+   under the value the way it does under a drawing. */
 .input,
 .select,
 .textarea {
   width: 100%;
-  padding: 0 var(--space-3);
-  height: 40px;
-  background: var(--surface-card);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
+  padding: 0 0 var(--space-2);
+  height: 32px;
+  background: none;
+  border: 0;
+  border-bottom: var(--rule-hair) solid var(--border-strong);
+  border-radius: 0;
   font-size: var(--text-sm);
   color: var(--text);
   transition:
     border-color var(--transition-fast),
-    box-shadow var(--transition-fast),
-    background-color var(--transition-fast);
+    color var(--transition-fast);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--text-faint);
 }
 
 .textarea {
   height: auto;
-  padding: var(--space-3);
+  padding: var(--space-2) 0;
   line-height: var(--leading-normal);
   resize: vertical;
-  min-height: 120px;
+  min-height: 110px;
 }
 
 .select {
   appearance: none;
-  padding-right: var(--space-8);
-  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
-    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  padding-right: var(--space-6);
+  /* The caret, drawn as two hairlines rather than set as a glyph. */
+  background-image: linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      currentColor calc(50% - 1px),
+      currentColor 50%,
+      transparent 50%
+    ),
+    linear-gradient(
+      to bottom left,
+      transparent calc(50% - 1px),
+      currentColor calc(50% - 1px),
+      currentColor 50%,
+      transparent 50%
+    );
   background-position:
-    calc(100% - 18px) 17px,
-    calc(100% - 13px) 17px;
+    right 7px center,
+    right center;
   background-size:
-    5px 5px,
-    5px 5px;
+    7px 7px,
+    7px 7px;
   background-repeat: no-repeat;
   cursor: pointer;
 }
@@ -338,20 +376,23 @@ textarea {
 .input:hover,
 .select:hover,
 .textarea:hover {
-  border-color: var(--accent);
+  border-bottom-color: var(--text);
 }
 
+/* The focus ring is a box shadow, which is invisible on a control that has no box.
+   These take the accent rule at full weight instead, which is the same signal the
+   ruled controls elsewhere use. */
 .input:focus-visible,
 .select:focus-visible,
 .textarea:focus-visible {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border-bottom-width: var(--rule-mid);
+  border-bottom-color: var(--accent);
 }
 
 .input.has-error,
 .select.has-error,
 .textarea.has-error {
-  border-color: var(--danger);
+  border-bottom-color: var(--danger);
 }
 
 .field-error {
@@ -366,10 +407,15 @@ textarea {
 
 /* Surfaces */
 
-.card {
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+/* Opened by a rule, not enclosed by a border. Same construction as a plate: the
+   heavy rule says a block starts here, and the block ends where the next one
+   begins. */
+.card,
+.panel {
+  padding-top: var(--space-4);
+  border-top: var(--rule-mid) solid var(--text);
+  background: none;
+  border-radius: 0;
 }
 
 /* A full-width hairline used to separate sections without boxing them. */
@@ -379,56 +425,55 @@ textarea {
   border: 0;
 }
 
-.panel {
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-}
-
 /* Badges */
 
-/* Tags, not pills. A status reads as a stamped label on a technical sheet. */
+/* A stamped word over a rule, not a tinted lozenge. Filled status pills were how a
+   mint green and a soft red got back onto the surface after the palette had settled
+   on one accent, and a row of them is the shape of every dashboard. The status is
+   carried by the word and the weight of the rule under it. */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  padding: 3px 6px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-sm);
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: var(--rule-mid) solid var(--border-strong);
+  border-radius: 0;
+  background: none;
   font-family: var(--font-mono);
   font-size: var(--label-size);
   font-weight: 500;
   letter-spacing: var(--label-tracking);
   text-transform: uppercase;
   line-height: 1.4;
+  color: var(--text-muted);
 }
 
 .badge-accent {
-  background: var(--accent-soft);
-  border-color: var(--accent-soft-strong);
+  border-bottom-color: var(--accent);
   color: var(--accent-text);
 }
 
+/* Active is the unremarkable state, so it is the quiet one. Only the states that
+   need a moderator's attention take a colour. */
 .badge-success {
-  background: var(--success-soft);
-  color: var(--success);
+  border-bottom-color: var(--border-strong);
+  color: var(--text-muted);
 }
 
 .badge-warning {
-  background: var(--warning-soft);
+  border-bottom-color: var(--warning);
   color: var(--warning);
 }
 
 .badge-danger {
-  background: var(--danger-soft);
+  border-bottom-color: var(--danger);
   color: var(--danger);
 }
 
 .badge-neutral {
-  background: transparent;
-  border-color: var(--border-strong);
-  color: var(--text-muted);
+  border-bottom-color: var(--border);
+  color: var(--text-subtle);
 }
 
 /* Feedback */

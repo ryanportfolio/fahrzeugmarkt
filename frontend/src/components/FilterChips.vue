@@ -31,32 +31,36 @@ const emit = defineEmits<{ remove: [chip: FilterChip]; clear: [] }>()
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-2) var(--space-4);
 }
 
+/* Ruled terms, not filled pills. These are the last set of pills in the product,
+   and a row of tinted lozenges under a page of hairlines belonged to a different
+   design. The accent marks them as applied; the rule under them makes them look
+   removable. */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  height: 30px;
-  padding: 0 var(--space-2) 0 var(--space-3);
-  border: 1px solid var(--accent-soft-strong);
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
+  padding: var(--space-2) 0 6px;
+  border: 0;
+  border-bottom: var(--rule-mid) solid var(--accent);
+  background: none;
   color: var(--accent-text);
-  font-size: var(--text-xs);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
   cursor: pointer;
   transition:
-    background-color var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast);
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .chip:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-contrast);
+  color: var(--danger);
+  border-bottom-color: var(--danger);
 }
 
 .chip-label {
@@ -64,20 +68,24 @@ const emit = defineEmits<{ remove: [chip: FilterChip]; clear: [] }>()
 }
 
 .clear {
-  height: 30px;
-  padding: 0 var(--space-2);
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  padding: var(--space-2) 0 6px;
+  border: 0;
+  border-bottom: var(--rule-hair) solid var(--border-strong);
+  background: none;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
   cursor: pointer;
-  transition: color var(--transition-fast);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .clear:hover {
-  color: var(--danger);
+  color: var(--text);
+  border-bottom-color: var(--text);
 }
 </style>

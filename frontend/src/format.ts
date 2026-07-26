@@ -116,7 +116,11 @@ export function sortLabel(value: SortKey | string): string {
   return SORT_LABELS[value as SortKey] ?? titleCase(value)
 }
 
-function titleCase(value: string): string {
+/* Guards the value, because these labellers are the last step before render and a
+ * field the API turned out not to send should degrade to "Not specified" rather
+ * than throw and leave the page on its skeletons. */
+function titleCase(value: string | null | undefined): string {
+  if (typeof value !== 'string' || !value) return NOT_SPECIFIED
   return value
     .toLowerCase()
     .split('_')

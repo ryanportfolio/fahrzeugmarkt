@@ -136,15 +136,15 @@ async function signOut() {
 </template>
 
 <style scoped>
-/* Inked chrome. On browse it runs continuously into the masthead, so the page
-   opens on one solid block rather than a white bar above a white band. */
+/* A running head, in the sense a printed catalogue means it: the title of the
+   publication, where you are in it, and nothing that competes with the page. */
 .header {
   position: sticky;
   top: 0;
   z-index: 40;
   background: var(--band);
   color: var(--band-text);
-  border-bottom: 1px solid var(--band-border);
+  border-bottom: var(--rule-hair) solid var(--band-border);
 }
 
 .header-inner {
@@ -160,10 +160,10 @@ async function signOut() {
   align-items: center;
   gap: var(--space-3);
   color: var(--band-text);
-  font-weight: 550;
+  font-weight: 500;
   font-size: var(--text-md);
-  letter-spacing: -0.02em;
-  margin-right: var(--space-6);
+  letter-spacing: -0.025em;
+  margin-right: var(--space-8);
 }
 
 .brand:hover {
@@ -173,11 +173,11 @@ async function signOut() {
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-sm);
   background: var(--accent-on-band);
-  color: #06211f;
+  color: var(--accent-on-band-contrast);
 }
 
 /* The shared button styles resolve against the page ramp, so the two auth
@@ -193,19 +193,19 @@ async function signOut() {
 
 .desktop-auth.btn-primary {
   background: var(--accent-on-band);
-  color: #06211f;
+  color: var(--accent-on-band-contrast);
 }
 
 .desktop-auth.btn-primary:not(:disabled):hover {
-  background: #63cabf;
+  background: #ffc266;
 }
 
 .nav-trigger {
   display: inline-grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid var(--band-border);
+  width: 34px;
+  height: 34px;
+  border: var(--rule-hair) solid var(--band-border);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--band-muted);
@@ -214,50 +214,56 @@ async function signOut() {
 
 .nav {
   display: none;
-  gap: var(--space-1);
+  align-items: baseline;
+  gap: var(--space-5);
 }
 
 .nav.open {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
   width: 100%;
   order: 3;
-  padding-bottom: var(--space-3);
+  padding-bottom: var(--space-4);
 }
 
+/* Ruled text, the same control the cover and the toolbar use. Filled pills in a
+   header are the one thing that would make this read as a web app again. */
 .nav-link {
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
+  padding-bottom: 2px;
+  border-bottom: var(--rule-mid) solid transparent;
   color: var(--band-muted);
-  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
   font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
   transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .nav-link:hover {
-  background: var(--band-field);
   color: var(--band-text);
 }
 
 .nav-link.router-link-active {
   color: var(--band-text);
-  background: var(--band-field);
+  border-bottom-color: var(--accent-on-band);
 }
 
+/* A figure, not a notification badge. The count belongs to the running head, and
+   a filled pill up here is the one thing that makes this read as a web app. It
+   also has to take the band ramp: --accent is burnt amber in the light theme and
+   would go dark-on-dark against the band. */
 .pill {
-  min-width: 20px;
-  padding: 0 5px;
-  border-radius: var(--radius-pill);
-  background: var(--accent);
-  color: var(--accent-contrast);
-  font-size: 11px;
-  font-weight: 700;
-  text-align: center;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-on-band);
 }
 
 .actions {
@@ -275,25 +281,27 @@ async function signOut() {
   position: relative;
 }
 
+/* Initials as ruled mono, not a filled circle. Resolves against the band ramp,
+   because it sits on the band in both themes. */
 .avatar {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1px solid var(--border-strong);
-  background: var(--accent-soft);
-  color: var(--accent-text);
-  font-size: var(--text-xs);
-  font-weight: 700;
+  padding: 0 0 2px;
+  border: 0;
+  border-bottom: var(--rule-mid) solid var(--band-border);
+  background: none;
+  color: var(--band-muted);
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
   cursor: pointer;
   transition:
-    border-color var(--transition-fast),
-    background-color var(--transition-fast);
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .avatar:hover {
-  border-color: var(--accent);
+  color: var(--band-text);
+  border-bottom-color: var(--accent-on-band);
 }
 
 .menu {
@@ -317,7 +325,7 @@ async function signOut() {
 
 .menu-name {
   font-size: var(--text-sm);
-  font-weight: 640;
+  font-weight: 500;
 }
 
 .menu-email {

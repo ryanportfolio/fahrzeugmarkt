@@ -189,7 +189,7 @@ function onPick(event: Event) {
 
 .drop-title {
   font-size: var(--text-sm);
-  font-weight: 620;
+  font-weight: 500;
 }
 
 .drop-note {
@@ -227,7 +227,7 @@ function onPick(event: Event) {
   background: var(--accent);
   color: var(--accent-contrast);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .cover.queued {

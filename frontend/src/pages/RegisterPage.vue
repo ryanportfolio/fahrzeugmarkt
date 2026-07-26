@@ -236,7 +236,7 @@ async function submit() {
 
 .role-title {
   font-size: var(--text-sm);
-  font-weight: 640;
+  font-weight: 500;
 }
 
 .role-note {
@@ -257,7 +257,7 @@ async function submit() {
 
 .side-title {
   font-size: var(--text-xs);
-  font-weight: 680;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-subtle);

@@ -118,7 +118,7 @@ onMounted(() => void load())
 
 .sender {
   font-size: var(--text-sm);
-  font-weight: 640;
+  font-weight: 500;
 }
 
 .email {
@@ -143,6 +143,6 @@ onMounted(() => void load())
   gap: var(--space-2);
   align-self: flex-start;
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: 500;
 }
 </style>

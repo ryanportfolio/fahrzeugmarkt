@@ -23,37 +23,31 @@ withDefaults(
 </template>
 
 <style scoped>
+/* A blank page in the catalogue, not a dashed box with a tinted tile in it. Opened
+   by the same rule every other block uses, set left, and given room. */
 .empty {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: var(--space-2);
-  padding: var(--space-16) var(--space-6);
-  background: var(--surface-card);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-lg);
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-8) 0 var(--space-16);
+  border-top: var(--rule-mid) solid var(--text);
 }
 
 .glyph {
-  display: grid;
-  place-items: center;
-  width: 56px;
-  height: 56px;
+  display: block;
   margin-bottom: var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--accent-soft);
-  color: var(--accent-text);
+  color: var(--text-faint);
 }
 
 .empty.error .glyph {
-  background: var(--danger-soft);
   color: var(--danger);
 }
 
 .title {
-  font-size: var(--text-lg);
-  font-weight: 640;
+  font-size: var(--text-2xl);
+  font-weight: 400;
+  letter-spacing: -0.026em;
 }
 
 .description {
@@ -65,8 +59,7 @@ withDefaults(
 .actions:not(:empty) {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   margin-top: var(--space-4);
 }
 </style>
