@@ -62,9 +62,18 @@ export interface SellerListingDto extends ListingCardDto {
   savedCount: number
 }
 
-export interface AdminListingDto extends ListingCardDto {
+/* The moderation queue is its own projection, not a card with extra fields on it.
+ * Declaring it as `extends ListingCardDto` claimed a dozen vehicle fields the API
+ * record does not carry, so the page read undefined off every row and threw before
+ * it painted. It is the seven fields the endpoint actually returns. */
+export interface AdminListingDto {
+  id: number
+  title: string
+  priceEur: number
   status: ListingStatus
   sellerEmail: string
+  sellerDisplayName: string
+  createdAt: string
 }
 
 export interface VehicleDetailDto {

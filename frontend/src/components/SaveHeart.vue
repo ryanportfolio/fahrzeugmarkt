@@ -35,21 +35,18 @@ const emit = defineEmits<{ toggle: [] }>()
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--surface-card);
-  color: var(--text-muted);
+  border: 0;
+  background: none;
+  color: var(--text-faint);
   cursor: pointer;
   transition:
     color var(--transition-fast),
-    background-color var(--transition-fast),
     border-color var(--transition-fast),
     transform var(--transition-fast);
 }
 
 .save:hover {
   color: var(--danger);
-  border-color: var(--danger);
 }
 
 .save:active {
@@ -58,31 +55,38 @@ const emit = defineEmits<{ toggle: [] }>()
 
 .save.active {
   color: var(--danger);
-  border-color: var(--danger);
 }
 
-/* Sits on the photograph, so it is inked like the body-type stamp rather than
-   floated as a white bubble. */
+/* There is no longer a photograph to sit on. The glass bubble this used to be was
+   built to float over a cropped studio shot, and on the open page it read as a
+   stray dark box. It is a bare mark in the plate's own head row now, sized to stay
+   a comfortable target. */
+/* No margin here on purpose. A margin shorthand in this component and the
+   `margin-left: auto` its host sets have equal specificity, so which one wins would
+   come down to stylesheet order. The host owns placement; this owns the target. */
 .floating {
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-sm);
-  border-color: rgba(243, 242, 239, 0.28);
-  background: rgba(10, 11, 12, 0.6);
-  color: rgba(243, 242, 239, 0.92);
-  backdrop-filter: blur(6px);
 }
 
-.floating:hover,
-.floating.active {
-  background: rgba(10, 11, 12, 0.78);
+.save:focus-visible {
+  color: var(--accent-text);
 }
 
+/* The one place it is a labelled control rather than a mark: the detail page, where
+   it is an action and takes the ruled idiom the other actions use. */
 .inline {
-  height: 48px;
-  padding: 0 var(--space-5);
+  height: 38px;
+  padding: 0 0 3px;
+  border-bottom: var(--rule-mid) solid var(--border-strong);
+  color: var(--text);
   font-size: var(--text-sm);
-  font-weight: 620;
+  font-weight: 500;
+}
+
+.inline:hover,
+.inline.active {
+  border-bottom-color: var(--danger);
 }
 
 .text {

@@ -5,7 +5,7 @@ import EmptyState from '../components/EmptyState.vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import { api } from '../api'
 import { errorMessage } from '../api/client'
-import { formatDateTime, formatPrice, specLine } from '../format'
+import { formatDateTime, formatPrice } from '../format'
 import type { AdminListingDto, ListingStatus } from '../types'
 
 type Tab = ListingStatus | 'ALL'
@@ -111,12 +111,11 @@ onMounted(() => void load())
               <RouterLink :to="{ name: 'listing', params: { id: listing.id } }" class="link">
                 {{ listing.title }}
               </RouterLink>
-              <p class="sub">{{ specLine(listing) }}</p>
               <p class="sub">Created {{ formatDateTime(listing.createdAt) }}</p>
             </td>
             <td class="nowrap">
-              <span class="seller">{{ listing.sellerEmail }}</span>
-              <p v-if="listing.city" class="sub">{{ listing.city }}</p>
+              <span class="seller">{{ listing.sellerDisplayName }}</span>
+              <p class="sub">{{ listing.sellerEmail }}</p>
             </td>
             <td class="nowrap price">{{ formatPrice(listing.priceEur) }}</td>
             <td><StatusBadge :status="listing.status" /></td>
@@ -174,40 +173,41 @@ onMounted(() => void load())
   color: var(--text-muted);
 }
 
+/* Ruled labels, the same control the browse toolbar uses. A rounded pill segmented
+   control was the single most template-coded widget in the build. */
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
-  margin-bottom: var(--space-5);
-  padding: var(--space-1);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
-  background: var(--surface-card);
+  align-items: baseline;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
   width: fit-content;
 }
 
 .tab {
-  height: 32px;
-  padding: 0 var(--space-4);
-  border: none;
-  border-radius: var(--radius-pill);
-  background: transparent;
-  color: var(--text-muted);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  padding: var(--space-2) 0 7px;
+  border: 0;
+  border-bottom: var(--rule-mid) solid transparent;
+  background: none;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  font-weight: 500;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
   cursor: pointer;
   transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .tab:hover {
-  color: var(--text);
+  color: var(--text-muted);
 }
 
 .tab.on {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  color: var(--text);
+  border-bottom-color: var(--accent);
 }
 
 .rows {
@@ -235,7 +235,7 @@ th {
   padding: var(--space-3) var(--space-4);
   text-align: left;
   font-size: var(--text-xs);
-  font-weight: 680;
+  font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-subtle);
@@ -262,7 +262,7 @@ tbody tr:hover {
 }
 
 .link {
-  font-weight: 620;
+  font-weight: 500;
   color: var(--text);
 }
 
@@ -286,7 +286,7 @@ tbody tr:hover {
 }
 
 .price {
-  font-weight: 640;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 

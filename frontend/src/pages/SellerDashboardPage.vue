@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import AppIcon from '../components/AppIcon.vue'
+import CarSilhouette from '../components/CarSilhouette.vue'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 import EmptyState from '../components/EmptyState.vue'
 import StatusBadge from '../components/StatusBadge.vue'
 import { api } from '../api'
-import { mediaUrl } from '../api/client'
 import { errorMessage } from '../api/client'
 import { formatDateTime, formatPrice, specLine } from '../format'
 import type { SellerListingDto } from '../types'
@@ -94,18 +94,20 @@ onMounted(() => void load())
 
     <div v-else-if="listings.length" class="rows">
       <article v-for="listing in listings" :key="listing.id" class="row card">
+        <!-- The seller's own listings are drawings from the same catalogue, so they
+             are drawn, not cropped. This was the last place still serving the baked
+             studio background inside a rounded thumbnail. -->
         <RouterLink
           :to="{ name: 'listing', params: { id: listing.id } }"
           class="thumb"
           :aria-label="listing.title"
         >
-          <img
-            v-if="listing.coverImageUrl"
-            :src="mediaUrl(listing.coverImageUrl)"
-            :alt="listing.title"
-            loading="lazy"
+          <CarSilhouette
+            :src="listing.coverImageUrl"
+            :model="listing.model"
+            :body-type="listing.bodyType"
+            :lit="false"
           />
-          <span v-else class="thumb-fallback"><AppIcon name="car" :size="24" /></span>
         </RouterLink>
 
         <div class="row-body">
@@ -206,7 +208,7 @@ onMounted(() => void load())
 
 .stat-value {
   font-size: var(--text-2xl);
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -235,27 +237,12 @@ onMounted(() => void load())
   align-items: start;
 }
 
+/* A drawing at glyph size standing on the page ground, not a photograph cropped
+   into a rounded box. */
 .thumb {
   display: block;
-  width: 96px;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-md);
-  background: var(--surface-sunken);
-  overflow: hidden;
-}
-
-.thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumb-fallback {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  color: var(--text-subtle);
+  width: 112px;
+  align-self: start;
 }
 
 .row-body {
@@ -274,7 +261,7 @@ onMounted(() => void load())
 
 .row-title {
   font-size: var(--text-md);
-  font-weight: 640;
+  font-weight: 500;
 }
 
 .row-title a {

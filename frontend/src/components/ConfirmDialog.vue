@@ -62,7 +62,7 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
 
 .title {
   font-size: var(--text-lg);
-  font-weight: 660;
+  font-weight: 500;
 }
 
 .message {
